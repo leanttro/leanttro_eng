@@ -298,7 +298,7 @@ if(top>4){var box=el.parentNode;box.style.aspectRatio=w+'/'+(h-top);el.style.hei
 }catch(e){}};p.src=el.src;})();</script>
 <script>(function(){
 /* ===== CONFIGURAÇÃO DO FORMULÁRIO ===== */
-var FORM_ENDPOINT = ""; /* ex.: "https://directus.leanttro.com/items/engrena_moradores" (coleção com permissão pública de criação) */
+var FORM_ENDPOINT = "https://soscorporativa.com.br/engrena/cadastro-morador"; /* salva na tabela sos_moradores (aparece no painel: Engrena Meu Bairro > Moradores) */
 var WHATSAPP = "5511948092924"; /* usado como alternativa enquanto FORM_ENDPOINT estiver vazio */
 /* ====================================== */
 var f=document.getElementById('mform'); if(!f) return;
@@ -318,8 +318,10 @@ f.addEventListener('submit',function(e){
   window.open('https://wa.me/'+WHATSAPP+'?text='+t,'_blank','noopener');
   msg('Abrimos o WhatsApp para você concluir o envio.','ok'); btn.disabled=false; return;
  }
- fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
- .then(function(r){if(!r.ok)throw 0;f.reset();msg('Cadastro enviado! Em breve entraremos em contato.','ok');})
+ var fd=new FormData(f); fd.append('origem','landing-engrena');
+ fetch(FORM_ENDPOINT,{method:'POST',body:fd})
+ .then(function(r){return r.json();})
+ .then(function(j){if(!j.sucesso)throw 0;f.reset();msg('Cadastro enviado! Em breve entraremos em contato.','ok');})
  .catch(function(){msg('Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp.','bad');})
  .finally(function(){btn.disabled=false;});
 });
